@@ -14,6 +14,7 @@ import com.zerofall.ezstorage.network.client.MsgCraftRecipe;
 import com.zerofall.ezstorage.util.EZInventory;
 import com.zerofall.ezstorage.util.EZInventoryManager;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
@@ -118,6 +119,9 @@ public class HandlerMsgCraftRecipe implements IMessageHandler<MsgCraftRecipe, IM
         returnContainerItems(inventory, extracted);
 
         result = result.copy();
+        FMLCommonHandler.instance()
+            .firePlayerCraftingEvent(player, result, tempGrid);
+        result.onCrafting(player.worldObj, player, result.stackSize);
         if (!player.inventory.addItemStackToInventory(result)) {
             ItemStack leftover = inventory.input(result);
             if (leftover != null) {
